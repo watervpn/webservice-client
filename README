@@ -1,0 +1,42 @@
+
+// Example usage
+
+require '../vendor/autoload.php';
+require '../WvpnClient/Factory.php';
+try{
+    $radius = WvpnClient\WebService::getServiceClient( 'radius' );
+
+    /**
+     * Get Account
+     */
+    $response = $radius->getAccount( 'superman2' );
+
+    /**
+     * Update Account
+     */
+    $data = ["passwd" =>"passwdchanged3"];
+    $response = $radius->updateAccount( 'superman2', $data );
+
+    /**
+     * Create Account
+     */
+    $id = "testingCool8";
+    $data = [ 
+        "id"        => $id,
+        "passwd"    => "passwdchanged3",
+        "status"    => "active",
+        "groups"    => ["pro"]
+    ];
+    $response = $radius->createAccount( $id, $data );*/
+
+    /**
+     * Delete Account
+     */
+    $response = $radius->deleteAccount( 'testingCool9' );
+
+    var_dump($response);
+}catch( GuzzleHttp\Exception\ClientException $e){
+    echo "ErrorCode: [{$e->getCode()}] Message: [{$e->getMessage()}]";
+}catch (Exception $e){
+    echo $e->getMessage();
+}
