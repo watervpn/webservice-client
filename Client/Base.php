@@ -1,6 +1,5 @@
 <?php
 namespace WvpnClient\Client;
-//require 'Autoloader.php';
 
 use GuzzleHttp\Client as GuzzleClient;
 use WvpnClient\Exception\EntityNotFoundException;

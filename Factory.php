@@ -18,16 +18,6 @@ class Factory
     public static function getInstance( $config = null ) 
     {
         return new Factory( new Config($config) );
-
-        /*$client = new Client([
-            'base_uri' => 'http://ws.watervpn.com/radius/account/',
-            'auth' => ['watervpn', 'landmark5!'],
-            'verify' => false,
-            'headers' => [
-                    'Accept'     => 'application/json',
-                ]
-        ]);
-        return $client;*/
     }
 
     public function __construct( Config $config ) 
