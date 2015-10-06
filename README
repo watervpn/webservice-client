@@ -1,3 +1,9 @@
+// Install Composer
+curl -sS https://getcomposer.org/installer | php
+
+// Install guzzle 5.3.0
+composer.phar require guzzlehttp/guzzle:5.3.0
+
 
 // Example usage
 

@@ -1,5 +1,6 @@
 <?php
 namespace WvpnClient\Client;
+use WvpnClient\Exception as Exception;
 
 class Radius extends Base
 {
@@ -7,34 +8,39 @@ class Radius extends Base
        return 'account';
    }
 
-   // AccountDataVerfy( $data )
-   // Account
-   public function createAccount( $user, array $data )
+   /**
+    * Radius Account
+    */
+   public function createAccount( $user, array $data, $async = false )
    {
-       $data = ['json' => $data];
-       return $this->post( $this->getAccountUriPrefix().'/'.$user, $data );
+       $options = ['json' => $data];
+       $options['future'] = $async;
+       return $this->post( $this->getAccountUriPrefix().'/'.$user, $options );
    }
 
-   public function getAccount( $user )
+   public function getAccount( $user, $async = false )
    {
-      return $this->get( $this->getAccountUriPrefix().'/'.$user );
+        $options['future'] = $async;
+        return $this->get( $this->getAccountUriPrefix().'/'.$user, $options );
    }
 
-   // Get All account
    public function getAccounts( $user )
    {
-      return $this->get( $this->getAccountUriPrefix() );
+        $options['future'] = $async;
+        return $this->get( $this->getAccountUriPrefix(), $options );
    }
 
-   public function updateAccount( $user, array $data )
+   public function updateAccount( $user, array $data, $async = false )
    {
-       $data = ['json' => $data];
-       return $this->put( $this->getAccountUriPrefix().'/'.$user, $data );
+       $options = ['json' => $data];
+       $options['future'] = $async;
+       return $this->put( $this->getAccountUriPrefix().'/'.$user, $options );
    }
 
-   public function deleteAccount( $user )
+   public function deleteAccount( $user, $async = false )
    {
-       return $this->delete( $this->getAccountUriPrefix().'/'.$user );
+       $options['future'] = $async;
+       return $this->delete( $this->getAccountUriPrefix().'/'.$user, $options );
    }
 
    public function test( $user )
@@ -42,14 +48,6 @@ class Radius extends Base
        return $this->get( 'apple' );
    }
 
-   /*$request = $client->post('http://httpbin.org/post', array(), array(
-           'custom_field' => 'my custom value',
-               'file_field'   => '@/path/to/file.xml'
-           ));*/
-
-   /*$r = $client->put('http://httpbin.org/put', [
-    'json' => ['foo' => 'bar']
-    ]);*/
 
 }
 

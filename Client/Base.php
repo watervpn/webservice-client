@@ -2,10 +2,19 @@
 namespace WvpnClient\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
-use WvpnClient\Exception\EntityNotFoundException;
+use GuzzleHttp\Message\RequestInterface;
+use WvpnClient\Exception as Exception;
 
-class Base extends GuzzleClient
+Abstract class Base extends GuzzleClient
 {
+    /**
+     * Webservice error code
+     */
+    const ENTITY_NOT_FOUND           = '404';
+    const ENTITY_ERROR               = '420';
+    const ENTITY_ALREADY_EXIST       = '421';
+    const ENTITY_CREATED             = '201';
+
     function __construct( array $config = [] ){
         parent::__construct( $config );
     }
@@ -13,83 +22,65 @@ class Base extends GuzzleClient
     /**
      * http get method
      */
-    public function get( $id )
+    public function get($id = null, $options = [])
     {
-        $response =  parent::get( $id );
-        // check header status
-        // $this->checkResponse( $response );
-        return $this->getContents( $response );
+        return $response =  parent::get( $id, $options );
     }  
 
     /**
      * http post method
      */
-    public function post( $id, array $data )
+    public function post($id = null, array $options = [])
     {
-        $response =  parent::post( $id, $data );
-        return $this->getContents( $response );
+        return $response =  parent::post( $id, $options );
+        // check if is statusCode 201
     }  
 
     /**
      * http put method
      */
-    public function put( $id, array $data )
+    public function put($id = null, array $options = [])
     {
-        $response =  parent::put( $id, $data );
-        return $this->getContents( $response );
+        return $response =  parent::put( $id, $options );
     }  
 
     /**
      * http delete method
      */
-    public function delete( $id )
+    public function delete($id = null, array $options = [])
     {
-        $response =  parent::delete( $id );
-        return $this->getContents( $response );
+        return $response =  parent::delete( $id, $options);
     }  
 
-    private function checkResponse()
+    /**
+     * Override this function in the child class for specified check
+     */
+    protected function errorCodeCheck( $e )
     {
-        //GuzzleHttp\Exception\ClientException
-        //get status code
-        // create own exception for 404(not found), 405(id exist)
-        // delete GuzzleHttp\Exception\ClientException 422 id not exist
-
+       $status = $e->getResponse()->getStatusCode();
+       $reason = $e->getResponse()->getReasonPhrase();
+       Switch( $status ){
+            case self::ENTITY_NOT_FOUND:
+                throw new Exception\EntityNotFoundException(__CLASS__." status: [$status], reason: [$reason] - Entity not found Exception");
+                break;
+            case self::ENTITY_ALREADY_EXIST:
+                throw new Exception\EntityAlreadyExsitException(__CLASS__." status: [$status], reason: [$reason] - Entity already exist Exception");
+                break;
+       }
     }
 
     /**
-     * Get response body content and decode base on response's contentType
+     *  GuzzleHttp\Client send override
      */
-    private function getContents( $response )
+    public function send( RequestInterface $request )
     {
-        $contentBody = $response->getBody()->getContents();
-        $contentType = $response->getHeader('Content-Type');
-        switch( $contentType ){
-            case 'application/hal+json':
-                return $this->decode('json', $contentBody);
-                break;
-            case 'text/xml':
-                return $this->decode('xml', $contentBody);
-                break;
-            default:
-                return $this->decode('json', $contentBody);
-                break;
+        try{
+            return  parent::send( $request );
+        }catch( \Exception $e ){
+            $this->errorCodeCheck( $e );
+            throw $e;
         }
-    }
 
-    /**
-     *
-     */
-    private function decode( $method, $content )
-    {
-        Switch($method){
-            case 'json':
-                return json_decode($content);
-                break;
-            case 'xml' :
-                 return simplexml_load_string($content);  
-                break;
-        }
     }
 
 }

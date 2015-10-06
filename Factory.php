@@ -1,6 +1,5 @@
 <?php
 namespace WvpnClient;
-require 'Autoloader.php';
 
 class Factory 
 {
@@ -47,11 +46,22 @@ class Factory
         }
         $className = $serviceConfig['class'];
 
-        $options = [];
+        // guzzle 6 
+        /*$options = [];
         $options['base_uri']    = $serviceConfig['url'];
         $options['auth']        = [ $serviceConfig['user'], $serviceConfig['passwd'] ];
         $options['verify']      = $clientConfig['ssl-verify'];
-        $options['headers']     = $clientConfig['headers'];
+        $options['headers']     = $clientConfig['headers'];*/
+
+        // guzzle 5.3
+        $options = [
+            'base_url' => "{$serviceConfig['url']}",
+            'defaults' => [
+                'auth'      => ["{$serviceConfig['user']}", "{$serviceConfig['passwd']}"],
+                'verify'    => $clientConfig['ssl-verify'],
+                'headers'   => $clientConfig['headers']
+            ]
+        ];
 
         $instance = new $className( $options );
         /*if(!is_a($instance,'Client')) {
