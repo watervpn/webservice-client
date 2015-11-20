@@ -46,6 +46,12 @@ class Config{
                         'user'      => 'username',
                         'passwd'    => 'password',
                 ),
+                'openvpn' => array(
+                        'class'     => 'WvpnClient\Client\Openvpn',
+                        'url'       => 'http://devws.watervpn.com/openvpn/',
+                        'user'      => 'username',
+                        'passwd'    => 'password',
+                ),
                 'rsa' => array(
                         'class'     => 'WvpnClient\Client\RAS',
                         'url'       => 'https://api-test.dev.alfredkan.com/rsa/',
