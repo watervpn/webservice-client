@@ -4,14 +4,11 @@ use WvpnClient\Exception as Exception;
 
 class Openvpn extends Base
 {
-   /*private function getAccountUriPrefix(){
-       return 'account';
-   }*/
-
    /**
     * Openvpn 
     */
-   public function getClientConfig( $account, $server, $downloadable = false, $filename = 'wpvn.opvn',  $async = false )
+   // Client Config
+   public function getClientConfig($account, $server, $downloadable = false, $filename = 'wpvn.opvn',  $async = false)
    {
         $data = ['account' => $account, 'server' => $server];
         $options = ['json' => $data];
@@ -31,22 +28,32 @@ class Openvpn extends Base
         }
    }
 
-   public function getClientParams( $account, $async = false )
+   public function getClientParams($account, $async = false)
    {
         /*$options['future'] = $async;
         return $this->get( 'getClientParams', $options );*/
    }
 
-   public function setClientParams( $account, $params, $async = false )
+   public function setClientParams($account, $params, $async = false)
    {
         /*$options['future'] = $async;
         return $this->post( 'setClientParams', $options );
         return $this->get( $this->getAccountUriPrefix().'/'.$user, $options );*/
    }
 
-   public function test( $user )
+   // Server Status
+   public function getServerStatus($host = null)
    {
-       return $this->get( 'apple' );
+        $data = ['host' => $host];
+        $options = ['json' => $data];
+        return $this->post( 'getServerStatus', $options );
+   }
+
+   public function fetchServerStatusJob($async = false)
+   {
+        $data = ['async' => $async];
+        $options = ['json' => $data];
+        return $this->post( 'fetchServerStatusJob', $options);
    }
 
 
